@@ -17,7 +17,12 @@ import { Data } from "../Data";
 import { Constants, Strings } from "../Config";
 import Header from "../components/Header";
 
-export default class List extends Component {
+import { setListItemDetails } from "../store/ListItemAction";
+
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+
+class List extends Component {
   static navigationOptions = {
     title: Strings.TITLE_LIST,
     headerStyle: {
@@ -56,7 +61,8 @@ export default class List extends Component {
   _keyExtractor = (item, index) => `item_${index}`;
 
   _onPressItem = itemData => {
-    this.props.navigation.navigate("ListItemDetail", { itemData });
+    this.props.setListItemDetails(itemData);
+    this.props.navigation.navigate("ListItemDetail");
   };
 
   renderItem = ({ item }) => {
@@ -89,3 +95,16 @@ export default class List extends Component {
     );
   }
 }
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      setListItemDetails
+    },
+    dispatch
+  );
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(List);

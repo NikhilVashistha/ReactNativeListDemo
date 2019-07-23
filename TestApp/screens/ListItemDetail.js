@@ -1,63 +1,63 @@
 import React, { PureComponent } from "react";
 
 import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
+import { connect } from "react-redux";
+
 import CustomImage from "../components/CustomImage";
 
-export default class ListItemDetail extends PureComponent {
+class ListItemDetail extends PureComponent {
   render() {
-    const { itemData, onPressItem } = this.props;
-
+    const { itemDetails } = this.props;
     return (
-      <TouchableOpacity onPress={onPressItem}>
-        <View style={styles.containerView}>
-          <CustomImage
-            style={styles.imageView}
-            borderRadius={25}
-            resizeMode={"contain"}
-            source={{
-              uri:
-                itemData.media[0].type == "image"
-                  ? itemData.media &&
-                    itemData.media.length > 0 &&
-                    itemData.media[0]["media-metadata"] &&
-                    itemData.media[0]["media-metadata"].length > 0 &&
-                    itemData.media[0]["media-metadata"][0].url
-                  : null
-            }}
-          />
-          <View style={styles.textContainer}>
-            <Text
-              style={styles.titleView}
-              numberOfLines={2}
-              ellipsizeMode={"tail"}
-            >
-              {itemData.title}
-            </Text>
+      <View style={styles.containerView}>
+        <CustomImage
+          style={styles.imageView}
+          resizeMode={"contain"}
+          source={{
+            uri:
+              itemDetails.media &&
+              itemDetails.media.length > 0 &&
+              itemDetails.media[0].type == "image"
+                ? itemDetails.media[0]["media-metadata"] &&
+                  itemDetails.media[0]["media-metadata"].length > 0 &&
+                  itemDetails.media[0]["media-metadata"][0].url
+                : null
+          }}
+        />
+        <View style={styles.textContainer}>
+          <Text style={styles.titleView}>{itemDetails.title}</Text>
 
-            <Text style={styles.authorView}>{itemData.byline}</Text>
-            <Text style={styles.dateView}>{itemData.published_date}</Text>
-          </View>
+          <Text style={styles.authorView}>{itemDetails.byline}</Text>
+          <Text style={styles.dateView}>{itemDetails.published_date}</Text>
+          <Text style={styles.dateView}>{itemDetails.abstract}</Text>
         </View>
-      </TouchableOpacity>
+      </View>
     );
   }
 }
 
+const mapStateToProps = state => {
+  const { listItem } = state;
+  return { itemDetails: listItem.itemDetails };
+};
+
+export default connect(mapStateToProps)(ListItemDetail);
+
 const styles = StyleSheet.create({
   containerView: {
     padding: 16,
-    flexDirection: "row",
     flex: 1,
     justifyContent: "center",
     alignItems: "center"
   },
   imageView: {
-    width: 50,
-    height: 50
+    width: 150,
+    height: 150
   },
   textContainer: {
     marginHorizontal: 10,
-    flex: 1
+    flex: 1,
+    marginTop: 15
   },
   titleView: {
     fontSize: 16,
@@ -71,7 +71,10 @@ const styles = StyleSheet.create({
   dateView: {
     color: "grey",
     fontSize: 16,
-    textAlign: "right",
-    flex: 1
+    marginTop: 6
+  },
+  abstractView: {
+    fontSize: 16,
+    marginTop: 6
   }
 });
