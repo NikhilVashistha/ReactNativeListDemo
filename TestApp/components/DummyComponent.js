@@ -2,7 +2,7 @@ import React from "react";
 
 import { Button, View, StyleSheet } from "react-native";
 
-export default (DummyComponent = props => {
+const DummyComponent = props => {
   return (
     <View style={styles.containerView}>
       <Button
@@ -13,7 +13,9 @@ export default (DummyComponent = props => {
       />
     </View>
   );
-});
+};
+
+export default DummyComponent;
 
 const styles = StyleSheet.create({
   containerView: {
