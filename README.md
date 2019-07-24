@@ -13,13 +13,27 @@ $ npm install
 ### For running app
 
 **ios**
+
 ```sh
 $ react-native run-ios
 ```
 
 **android**
+
 ```sh
 $ react-native run-android
+```
+
+### For running test
+
+```sh
+$ npm run test
+```
+
+##### Generating coverage report
+
+```sh
+$ npm run test:coverage
 ```
 
 ### Components
