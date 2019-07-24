@@ -8,7 +8,11 @@ import {
   SafeAreaView,
   StatusBar,
   FlatList,
-  ActivityIndicator
+  ActivityIndicator,
+  StyleSheet,
+  View,
+  Button,
+  Text
 } from "react-native";
 
 import ListItem from "./ListItem";
@@ -20,6 +24,7 @@ import { setListItemDetails } from "../store/ListItemAction";
 
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import { TextInput } from "react-native-gesture-handler";
 
 export class List extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -33,12 +38,6 @@ export class List extends Component {
           title={Strings.TITLE_MENU_LEFT}
           onPress={() => navigation.openDrawer()}
         />
-      ),
-      headerRight: (
-        <CustomButton
-          title={Strings.TITLE_MENU_RIGHT}
-          onPress={() => navigation.openDrawer()}
-        />
       )
     };
   };
@@ -47,7 +46,8 @@ export class List extends Component {
     super(props);
     this.state = {
       listData: [],
-      isLoading: false
+      isLoading: false,
+      periodValue: 1
     };
   }
 
@@ -56,12 +56,16 @@ export class List extends Component {
   }
 
   showLoader = show => {
-    this.setState({ isLoading: show });
+    this.setState({ listData: [], isLoading: show });
   };
 
-  getMostPopularArticles() {
+  getMostPopularArticles(periodValue = 1) {
+    if (!this.validatePeriodVal(periodValue)) {
+      return;
+    }
+
     this.showLoader(true);
-    Axios.get(Constants.API_POPULAR_ARTICLES)
+    Axios.get(Constants.API_POPULAR_ARTICLES(periodValue))
       .then(response => {
         this.setState({ listData: response.data.results, isLoading: false });
       })
@@ -88,19 +92,61 @@ export class List extends Component {
     );
   };
 
+  validatePeriodVal = periodValue => {
+    if (periodValue == 1 || periodValue == 7 || periodValue == 30) {
+      return true;
+    }
+
+    setTimeout(() => {
+      alert(Strings.HOME_MSG_ERROR_PERIOD);
+    });
+
+    return false;
+  };
+
+  updatePeriod = periodValue => {
+    this.setState({
+      periodValue: periodValue
+    });
+  };
+
   render() {
     return (
       <Fragment>
         <StatusBar barStyle={"dark-content"} />
         <SafeAreaView>
           {this.state.listData && this.state.listData.length > 0 ? (
-            <FlatList
-              data={this.state.listData}
-              renderItem={this.renderItem}
-              keyExtractor={this._keyExtractor}
-            />
-          ) : (
+            <Fragment>
+              <View style={styles.periodContainerView}>
+                <Text>{Strings.HOME_TXT_PERIOD}</Text>
+                <TextInput
+                  value={`${this.state.periodValue}`}
+                  style={styles.inputStyle}
+                  maxLength={2}
+                  keyboardType="number-pad"
+                  placeholder={Strings.HOME_PERIOD_PLACEHOLDER}
+                  onChangeText={text => {
+                    this.updatePeriod(text);
+                  }}
+                />
+                <CustomButton
+                  title={Strings.HOME_BTN_SUBMIT}
+                  onPress={() => {
+                    this.getMostPopularArticles(this.state.periodValue);
+                  }}
+                />
+              </View>
+              <FlatList
+                data={this.state.listData}
+                renderItem={this.renderItem}
+                keyExtractor={this._keyExtractor}
+                extraData={this.state.listData}
+              />
+            </Fragment>
+          ) : this.state.isLoading ? (
             <ActivityIndicator size="large" />
+          ) : (
+            <Text>No Data Available</Text>
           )}
         </SafeAreaView>
       </Fragment>
@@ -120,3 +166,18 @@ export default connect(
   null,
   mapDispatchToProps
 )(List);
+
+const styles = StyleSheet.create({
+  inputStyle: {
+    paddingHorizontal: 16,
+    marginVertical: 20,
+    marginLeft: 10,
+    flex: 1,
+    borderBottomWidth: 1
+  },
+  periodContainerView: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16
+  }
+});
