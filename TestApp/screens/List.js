@@ -13,7 +13,6 @@ import {
 } from "react-native";
 import ListItem from "./ListItem";
 import Axios from "react-native-axios";
-import { Data } from "../Data";
 import { Constants, Strings } from "../Config";
 import Header from "../components/Header";
 
@@ -83,7 +82,7 @@ export class List extends Component {
         <SafeAreaView>
           {this.state.listData && this.state.listData.length > 0 ? (
             <FlatList
-              data={Data.results}
+              data={this.state.listData}
               renderItem={this.renderItem}
               keyExtractor={this._keyExtractor}
             />
