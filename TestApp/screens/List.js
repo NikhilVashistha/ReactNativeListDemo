@@ -8,13 +8,13 @@ import {
   SafeAreaView,
   StatusBar,
   FlatList,
-  ActivityIndicator,
-  Button
+  ActivityIndicator
 } from "react-native";
+
 import ListItem from "./ListItem";
 import Axios from "react-native-axios";
 import { Constants, Strings } from "../Config";
-import Header from "../components/Header";
+import CustomButton from "../components/CustomButton";
 
 import { setListItemDetails } from "../store/ListItemAction";
 
@@ -22,12 +22,25 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 export class List extends Component {
-  static navigationOptions = {
-    title: Strings.TITLE_LIST,
-    headerStyle: {
-      backgroundColor: "lightgreen"
-    },
-    headerLeft: <Header />
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: Strings.TITLE_LIST,
+      headerStyle: {
+        backgroundColor: "lightgreen"
+      },
+      headerLeft: (
+        <CustomButton
+          title={Strings.TITLE_MENU_LEFT}
+          onPress={() => navigation.openDrawer()}
+        />
+      ),
+      headerRight: (
+        <CustomButton
+          title={Strings.TITLE_MENU_RIGHT}
+          onPress={() => navigation.openDrawer()}
+        />
+      )
+    };
   };
 
   constructor(props) {
