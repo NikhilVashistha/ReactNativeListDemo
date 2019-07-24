@@ -114,7 +114,7 @@ export class List extends Component {
     return (
       <Fragment>
         <StatusBar barStyle={"dark-content"} />
-        <SafeAreaView>
+        <SafeAreaView style={styles.containerView}>
           {this.state.listData && this.state.listData.length > 0 ? (
             <Fragment>
               <View style={styles.periodContainerView}>
@@ -137,6 +137,7 @@ export class List extends Component {
                 />
               </View>
               <FlatList
+                style={styles.listStyle}
                 data={this.state.listData}
                 renderItem={this.renderItem}
                 keyExtractor={this._keyExtractor}
@@ -168,6 +169,12 @@ export default connect(
 )(List);
 
 const styles = StyleSheet.create({
+  containerView: {
+    marginBottom: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1
+  },
   inputStyle: {
     paddingHorizontal: 16,
     marginVertical: 20,
@@ -179,5 +186,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 16
+  },
+  listStyle: {
+    width: "100%"
   }
 });
