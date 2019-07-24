@@ -22,7 +22,7 @@ import { setListItemDetails } from "../store/ListItemAction";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-class List extends Component {
+export class List extends Component {
   static navigationOptions = {
     title: Strings.TITLE_LIST,
     headerStyle: {
